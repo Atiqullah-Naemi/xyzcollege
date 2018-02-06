@@ -2,18 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Session;
 use App\Course;
-use App\Student;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    /* Use Auth middleware for this controller */
-    public function __construct()
-    {
-        $this->middleware("auth");
-    }
     /**
      * Display a listing of the resource.
      *
@@ -21,8 +14,17 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::all();
-        return view('courses.index')->withCourses($courses);
+        return view('course');
+    }
+
+    /**
+     * Display a listing of the data.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getCourse()
+    {
+        return Course::orderBy('id', 'DESC')->get();
     }
 
     /**
@@ -32,8 +34,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        $students = Student::all();
-        return view('courses.create')->withStudents($students);
+        //
     }
 
     /**
@@ -44,28 +45,23 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, array(
-                'name'           => 'required|max:255',
-            ));
-
         $course = new Course;
 
-        $course->name        = $request->name;
-        $course->duration        = $request->duration;
-        $course->student_id = $request->student_id;
+        $course->name = $request->name;
+        $course->duration = $request->duration;
 
         $course->save();
-        Session::flash('success', 'New course created successfully!');
-        return redirect()->route('courses.index');
+
+        return $course;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Course $course)
     {
         //
     }
@@ -73,54 +69,40 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Course $course)
     {
-        $course = Course::find($id);
-
-        $students = Student::all();
-
-        return view('courses.edit')->withCourse($course)->withStudents($students);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Course $course)
     {
-        $course = Course::find($id);
+        $course = Course::find($request->id);
 
-        $this->validate($request, array(
-                'name'       => 'required|max:255',
-        ));
-
-        $course->name        = $request->name;
-        $course->duration        = $request->duration;
+        $course->name = $request->name;
+        $course->duration = $request->duration;
 
         $course->save();
 
-        Session::flash('success', 'One studnet updated successfully!');
-        return redirect()->route('courses.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Course $course)
     {
-        $course = Course::find($id);
-
-        $course->delete();
-        Session::flash('success', 'One course Deleted Successfully!');
-        return redirect()->route('courses.index');
+        Course::where('id', $course->id)->delete();
     }
 }

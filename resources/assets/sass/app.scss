@@ -5,5 +5,11 @@
 // Variables
 @import "variables";
 
-// Bootstrap
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+// Bulma
+@import "~bulma/bulma";
+
+// Fontawesome
+@import "~font-awesome/css/font-awesome";
+
+// Select2
+@import "~select2/dist/css/select2";

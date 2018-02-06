@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Session;
 use App\Student;
+use App\Course;
+use Illuminate\Http\Request;
+use App\Http\Requests\StudentRequest;
 
 class StudentController extends Controller
 {
-    /* Use Auth middleware for this controller */
-    public function __construct()
-    {
-        $this->middleware("auth");
-    }
     /**
      * Display a listing of the resource.
      *
@@ -20,8 +16,27 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::all();        
-        return view('students.index')->withStudents($students);
+        return view('student');
+    }
+
+    /**
+     * Display a listing of the data.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getData()
+    {
+        return Student::orderBy('firstname', 'ASC')->get();
+    }
+
+    /**
+     * Display a listing of the courses.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listCourse()
+    {
+        return Course::orderBy('name', 'ASC')->get();
     }
 
     /**
@@ -31,7 +46,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view('students.create');
+        //
     }
 
     /**
@@ -42,33 +57,27 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, array(
-                'firstname'           => 'required|max:255',
-                'lastname'           => 'required|max:255',
-                'student_email'           => 'required',
-            ));
 
-        $student = new Student;
+        $pb = new Student;
 
-        $student->firstname        = $request->firstname;
-        $student->lastname        = $request->lastname;
-        $student->student_email        = $request->student_email;
-        $student->phone_number        = $request->phone_number;
-        $student->date_of_birth        = $request->date_of_birth;
+        $pb->firstname = $request->firstname;
+        $pb->lastname = $request->lastname;
+        $pb->phone = $request->phone;
+        $pb->email = $request->email;
+        $pb->date_of_birth = $request->date_of_birth;
 
+        $pb->save();
 
-        $student->save();
-        Session::flash('success', 'New student created successfully!');
-        return redirect()->route('students.index');
+        return $pb;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Student $student)
     {
         //
     }
@@ -76,57 +85,42 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Student $student)
     {
-        $student = Student::find($id);
-
-        return view('students.edit')->withStudent($student);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $student = Student::find($id);
+        $pb = Student::find($request->id);
 
-        $this->validate($request, array(
-                'firstname'       => 'required|max:255',
-                'lastname' => 'required|max:255',
-                'student_email'        => 'required',
-        ));
+        $pb->firstname = $request->firstname;
+        $pb->lastname = $request->lastname;
+        $pb->phone = $request->phone;
+        $pb->email = $request->email;
+        $pb->date_of_birth = $request->date_of_birth;
 
-        $student->firstname        = $request->firstname;
-        $student->lastname        = $request->lastname;
-        $student->student_email        = $request->student_email;
-        $student->phone_number        = $request->phone_number;
-        $student->date_of_birth        = $request->date_of_birth;
-
-        $student->save();
-
-        Session::flash('success', 'One studnet updated successfully!');
-        return redirect()->route('students.index');
+        $pb->save();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Student $student)
     {
-        $student = Student::find($id);
-
-        $student->delete();
-        Session::flash('success', 'One student Deleted Successfully!');
-        return redirect()->route('students.index');
+        Student::where('id', $Student->id)->delete();
     }
 }

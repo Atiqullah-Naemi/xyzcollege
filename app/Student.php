@@ -6,13 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    public function courses()
-    {
-    	return $this->hasMany('App\Course');
-    }
-
-    public function scopeSearch($query, $s)
-    {
-    	return $query->where('firstname', 'like', '%'.$s.'%')->orWhere('lastname', 'like', '%'.$s.'%');
-    }
+	public function courses()
+	{
+		return $this->belongsToMany('App\Course');
+	}
 }

@@ -12,11 +12,23 @@
 */
 
 Route::get('/', function () {
-    return view('layouts/app');
+    return view('welcome');
 });
 
-Route::resource('students', 'StudentController');
-Route::resource('courses', 'CourseController');
-Auth::routes();
+Route::get('/student/{name}', function() {
+	return redirect('/');
+})->where('name', '[A-Za-z]+');
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::resource('student', 'studentController');
+
+Route::post('getData', 'studentController@getData');
+
+Route::post('listCourse', 'studentController@listCourse');
+
+Route::resource('course', 'courseController');
+
+Route::get('/course/{name}', function() {
+	return redirect('/');
+})->where('name', '[A-Za-z]+');
+
+Route::post('getCourse', 'courseController@getCourse');

@@ -17,8 +17,8 @@ class CreateStudentsTable extends Migration
             $table->increments('id');
             $table->string('firstname');
             $table->string('lastname');
-            $table->string('student_email');
-            $table->integer('phone_number');
+            $table->integer('phone');
+            $table->string('email');
             $table->date('date_of_birth')->nullable();
             $table->timestamps();
         });
